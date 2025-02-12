@@ -24,7 +24,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -44,6 +46,10 @@ public class AuthServiceImpl implements IAuthService {
             return Result.failure(List.of("El usuario con el correo " + registrarUsuarioRequestDTO.getCorreo()+ " , ya se encuentra registrado."), HttpStatus.BAD_REQUEST);
         }
         var user = buildCliente(registrarUsuarioRequestDTO);
+        if(Stream.of(user.getCorreo(), user.getNumeroIdetificacion()).anyMatch(Objects::isNull) ){
+            return Result.failure(List.of("El usuario con el correo " + registrarUsuarioRequestDTO.getCorreo()+ " , No se pudo registrar, revisar correo o # identificacion."), HttpStatus.BAD_REQUEST);
+        }
+
         Usuario userSaved = userRepository.save(user);
         return Result.success(new UserResponse(userSaved.getId()));
     }
