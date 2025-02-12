@@ -30,7 +30,7 @@ public class AuthController {
      * Registra un nuevo usuario en el sistema.
      *
      * Este método permite registrar un nuevo usuario proporcionando los datos
-     * necesarios a través de un objeto {@link ClienteRegisterRequestDTO}.
+     * necesarios a través de un objeto {@link RegistrarUsuarioRequestDTO}.
      * Al registrar el usuario, el sistema genera un token de acceso que se
      * devuelve en la respuesta, lo cual permite que el usuario se autentique
      * en el sistema.

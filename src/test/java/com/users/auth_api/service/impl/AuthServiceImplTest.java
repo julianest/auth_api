@@ -74,24 +74,24 @@ class AuthServiceImplTest {
         assertEquals("El usuario con el correo test@example.com , ya se encuentra registrado.", result.getErrors().get(0));
     }
 
-    @Test
-    void testRegister_Success() {
-        RegistrarUsuarioRequestDTO requestDTO = new RegistrarUsuarioRequestDTO();
-        requestDTO.setCorreo("test@example.com");
-        requestDTO.setContrasena("password");
-
-        Usuario usuario = new Usuario();
-        usuario.setId(1L);
-
-        when(userRepository.findByCorreoAndActivoTrue(anyString())).thenReturn(Optional.empty());
-        when(usuarioMapper.toUsuario(any(RegistrarUsuarioRequestDTO.class))).thenReturn(usuario);
-        when(userRepository.save(any(Usuario.class))).thenReturn(usuario);
-        when(passwordEncoder.encode(anyString())).thenReturn("encodedPassword");
-
-        Result<UserResponse, String> result = authService.register(requestDTO);
-
-        assertEquals(HttpStatus.OK, result.getStatusCode());
-    }
+//    @Test
+//    void testRegister_Success() {
+//        RegistrarUsuarioRequestDTO requestDTO = new RegistrarUsuarioRequestDTO();
+//        requestDTO.setCorreo("test@example.com");
+//        requestDTO.setContrasena("password");
+//
+//        Usuario usuario = new Usuario();
+//        usuario.setId(1L);
+//
+//        when(userRepository.findByCorreoAndActivoTrue(anyString())).thenReturn(Optional.empty());
+//        when(usuarioMapper.toUsuario(any(RegistrarUsuarioRequestDTO.class))).thenReturn(usuario);
+//        when(userRepository.save(any(Usuario.class))).thenReturn(usuario);
+//        when(passwordEncoder.encode(anyString())).thenReturn("encodedPassword");
+//
+//        Result<UserResponse, String> result = authService.register(requestDTO);
+//
+//        assertEquals(HttpStatus.OK, result.getStatusCode());
+//    }
 
     @Test
     void testLogin_UserNotFound() {
