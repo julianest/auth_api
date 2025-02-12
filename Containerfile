@@ -13,8 +13,8 @@ FROM eclipse-temurin:17-jre-alpine
 
 WORKDIR /app
 
-COPY --from=build /app/build/libs/auth-api-1.0.0.jar /app/auth-api.jar
+COPY --from=build /app/build/libs/auth_api-1.0.0.jar /app/auth_api.jar
 
 EXPOSE 8080
 
-ENTRYPOINT ["java", "-jar", "auth-api.jar"]
+ENTRYPOINT ["java", "-jar", "auth_api.jar"]

@@ -83,7 +83,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Tag Docker Image
-        run: docker tag auth-api ghcr.io/${{ github.repository_owner }}/auth-api:v1.0.0
+        run: docker tag auth-api ghcr.io/${{ github.repository_owner }}/auth_api:v1.0.0
 
       - name: Push Docker Image to GHCR
-        run: docker push ghcr.io/${{ github.repository_owner }}/auth-api:v1.0.0
+        run: docker push ghcr.io/${{ github.repository_owner }}/auth_api:v1.0.0
