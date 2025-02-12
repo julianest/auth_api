@@ -24,7 +24,7 @@ jacocoTestReport {
 	}
 }
 group = 'com.users'
-version = '0.0.1-SNAPSHOT'
+version = '1.0.0'
 
 java {
 	toolchain {
@@ -40,6 +40,10 @@ configurations {
 
 repositories {
 	mavenCentral()
+}
+
+ext {
+	set('snippetsDir', file("build/generated-snippets"))
 }
 
 dependencies {
@@ -68,5 +72,10 @@ dependencies {
 }
 
 tasks.named('test') {
+	outputs.dir snippetsDir
 	useJUnitPlatform()
+}
+tasks.named('asciidoctor') {
+	inputs.dir snippetsDir
+	dependsOn test
 }
