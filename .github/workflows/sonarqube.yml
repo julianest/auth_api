@@ -55,8 +55,8 @@ jobs:
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
         with:
           args:
-            -Dsonar.projectKey=CharlSK8_CuentaBancaria
-            -Dsonar.organization=charlsk8
+            -Dsonar.projectKey=julianest_auth_api
+            -Dsonar.organization=julianest
             -Dsonar.sources=src
             -Dsonar.java.binaries=build/classes/java/main
             -Dsonar.java.source=17
@@ -73,7 +73,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Build Docker Image
-        run: docker build -t cuentas-bancarias -f Containerfile .
+        run: docker build -t auth_api -f Containerfile .
 
       - name: Login to GHCR
         uses: docker/login-action@v2
@@ -83,7 +83,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Tag Docker Image
-        run: docker tag cuentas-bancarias ghcr.io/charlsk8/cuentas-bancarias:v1.0.0
+        run: docker tag auth-api ghcr.io/${{ github.repository_owner }}/auth-api:v1.0.0
 
       - name: Push Docker Image to GHCR
-        run: docker push ghcr.io/charlsk8/cuentas-bancarias:v1.0.0
+        run: docker push ghcr.io/${{ github.repository_owner }}/auth-api:v1.0.0
