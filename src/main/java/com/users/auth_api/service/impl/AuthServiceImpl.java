@@ -5,15 +5,18 @@ import com.users.auth_api.dto.request.RegistrarUsuarioRequestDTO;
 import com.users.auth_api.dto.response.TokenResponse;
 import com.users.auth_api.dto.response.UserResponse;
 import com.users.auth_api.entity.Token;
+import com.users.auth_api.entity.UserEventMessage;
 import com.users.auth_api.entity.Usuario;
 import com.users.auth_api.mapper.IUsuarioMapper;
 import com.users.auth_api.repository.ITokenRepository;
 import com.users.auth_api.repository.IUsuarioRepository;
 import com.users.auth_api.service.IAuthService;
 import com.users.auth_api.service.IJwtService;
+import com.users.auth_api.service.JmsMessageService;
 import com.users.auth_api.util.Result;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.jms.core.JmsTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
@@ -38,6 +41,8 @@ public class AuthServiceImpl implements IAuthService {
     private final IJwtService jwtService;
     private final AuthenticationManager authenticationManager;
     private final IUsuarioMapper usuarioMapper;
+    private final JmsMessageService jmsMessageService;
+
 
     @Override
     public Result<UserResponse, String> register(RegistrarUsuarioRequestDTO registrarUsuarioRequestDTO) {
@@ -51,6 +56,13 @@ public class AuthServiceImpl implements IAuthService {
         }
 
         Usuario userSaved = userRepository.save(user);
+
+        // ActiveMQ
+        UserEventMessage eventMessage = new UserEventMessage("REGISTER", //Creamos mensaje
+                userSaved.getId(), userSaved.getNumeroIdentificacion(), userSaved.getCorreo());
+
+        jmsMessageService.sendEvent("auth_api", eventMessage); //Enviamos
+
         return Result.success(new UserResponse(userSaved.getId()));
     }
 

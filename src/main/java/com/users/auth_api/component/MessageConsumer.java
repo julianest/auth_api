@@ -1,7 +1,7 @@
 package com.users.auth_api.component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.users.auth_api.entity.SystemMessage;
+import com.users.auth_api.entity.UserEventMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jms.annotation.JmsListener;
@@ -12,12 +12,11 @@ public class MessageConsumer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MessageConsumer.class);
 
-    @JmsListener(destination = "auth-queue")
-    public void messageListener(String messageJson) {
+    @JmsListener(destination = "auth-queue", containerFactory = "jmsListenerContainerFactory")
+    public void messageListener(UserEventMessage eventMessage) {
         try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            SystemMessage systemMessage = objectMapper.readValue(messageJson, SystemMessage.class);
-            LOGGER.info("Message received: {}", systemMessage);
+            System.out.println("📩 Evento recibido: " + eventMessage);
+            LOGGER.info("Message received: {}", eventMessage);
         } catch (Exception e) {
             LOGGER.error("Error processing message: {}", e.getMessage(), e);
         }
