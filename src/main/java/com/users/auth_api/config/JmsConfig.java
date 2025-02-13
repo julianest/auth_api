@@ -1,6 +1,7 @@
 package com.users.auth_api.config;
 
 import jakarta.jms.ConnectionFactory;
+import jakarta.jms.Session;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,6 +24,7 @@ public class JmsConfig {
         DefaultJmsListenerContainerFactory jmsListenerContainerFactory = new DefaultJmsListenerContainerFactory();
 
         jmsListenerContainerFactory.setConnectionFactory(connectionFactory);
+        //jmsListenerContainerFactory.setSessionAcknowledgeMode(Session.CLIENT_ACKNOWLEDGE);
         jmsListenerContainerFactory.setConcurrency("5-10");
 
         return jmsListenerContainerFactory;
