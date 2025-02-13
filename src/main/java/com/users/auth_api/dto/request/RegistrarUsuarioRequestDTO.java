@@ -13,8 +13,8 @@ import lombok.*;
 public class RegistrarUsuarioRequestDTO {
 	
     @Schema(description = "Numero de identificacion del usuario", example = "12346", requiredMode = Schema.RequiredMode.REQUIRED)
-	@NotBlank(message = "El campo 'numeroIdetificacion' es obligatorio")
-    private String numeroIdetificacion;
+	@NotBlank(message = "El campo 'numeroIdentificacion' es obligatorio")
+    private String numeroIdentificacion;
     @Schema(description = "Primer nombre del usuario", example = "Carlos", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotBlank(message = "El campo 'nombre' es obligatorio")
     private String nombre;

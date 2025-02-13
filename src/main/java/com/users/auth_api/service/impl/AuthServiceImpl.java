@@ -46,7 +46,7 @@ public class AuthServiceImpl implements IAuthService {
             return Result.failure(List.of("El usuario con el correo " + registrarUsuarioRequestDTO.getCorreo()+ " , ya se encuentra registrado."), HttpStatus.BAD_REQUEST);
         }
         var user = buildCliente(registrarUsuarioRequestDTO);
-        if(Stream.of(user.getCorreo(), user.getNumeroIdetificacion()).anyMatch(Objects::isNull) ){
+        if(Stream.of(user.getCorreo(), user.getNumeroIdentificacion()).anyMatch(Objects::isNull) ){
             return Result.failure(List.of("El usuario con el correo " + registrarUsuarioRequestDTO.getCorreo()+ " , No se pudo registrar, revisar correo o # identificacion."), HttpStatus.BAD_REQUEST);
         }
 

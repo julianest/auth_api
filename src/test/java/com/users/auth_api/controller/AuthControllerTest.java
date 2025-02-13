@@ -49,7 +49,7 @@ class AuthControllerTest {
         objectMapper = new ObjectMapper();
         mockMvc = MockMvcBuilders.standaloneSetup(authController).build();
         requestDTO = RegistrarUsuarioRequestDTO.builder()
-                .numeroIdetificacion("12346")
+                .numeroIdentificacion("12346")
                 .nombre("Carlos")
                 .correo("carlos@gmail.com")
                 .contrasena("Carlos1234!")

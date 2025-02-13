@@ -15,7 +15,7 @@ import java.util.Set;
 @NoArgsConstructor
 public class UsuarioResponseDTO {
 
-    private String numeroIdetificacion;
+    private String numeroIdentificacion;
     private String nombre;
     private String apellido;
     private String telefono;
