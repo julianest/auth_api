@@ -15,13 +15,6 @@ import org.springframework.jms.support.converter.MessageType;
 @EnableJms
 public class JmsConfig {
 
-    @Value("${spring.activemq.broker-url}")
-    private String brokerUrl;
-    @Value("${spring.activemq.user}")
-    private String brokerUsername;
-    @Value("${spring.activemq.password}")
-    private String brokerPassword;
-
     @Bean
     public MessageConverter jacksonJmsMessageConverter() {
         MappingJackson2MessageConverter converter = new MappingJackson2MessageConverter();

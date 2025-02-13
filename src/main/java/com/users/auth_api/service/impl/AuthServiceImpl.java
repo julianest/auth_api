@@ -4,6 +4,7 @@ import com.users.auth_api.dto.request.LoginRequestDTO;
 import com.users.auth_api.dto.request.RegistrarUsuarioRequestDTO;
 import com.users.auth_api.dto.response.TokenResponse;
 import com.users.auth_api.dto.response.UserResponse;
+import com.users.auth_api.entity.LogoutUserEventMessage;
 import com.users.auth_api.entity.Token;
 import com.users.auth_api.entity.UserEventMessage;
 import com.users.auth_api.entity.Usuario;
@@ -16,7 +17,6 @@ import com.users.auth_api.service.JmsMessageService;
 import com.users.auth_api.util.Result;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.jms.core.JmsTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
@@ -91,6 +91,12 @@ public class AuthServiceImpl implements IAuthService {
         var refreshToken = jwtService.generateRefreshToken(usuario);
         revokeAllUserTokens(usuario);
         saveUserToken(usuario, jwtToken);
+        // ActiveMQ
+        UserEventMessage eventMessage = new UserEventMessage("LOGIN",
+                usuario.getId(), usuario.getNumeroIdentificacion(), usuario.getCorreo());
+
+        jmsMessageService.sendEvent("auth_api", eventMessage);
+
         return Result.success(new TokenResponse(usuario.getId(),jwtToken, refreshToken));
     }
 
@@ -150,6 +156,13 @@ public class AuthServiceImpl implements IAuthService {
         token.setExpired(true);
         tokenRepository.save(token);
         SecurityContextHolder.clearContext();
+        // ActiveMQ
+        String tokenString = token.getToken().toString();
+        LogoutUserEventMessage eventMessage = new LogoutUserEventMessage("LOGOUT",
+                tokenString);
+
+        jmsMessageService.sendEvent("auth_api", eventMessage);
+
         return Result.success("Logout successful");
     }
 

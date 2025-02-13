@@ -1,7 +1,6 @@
 package com.users.auth_api.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.users.auth_api.entity.UserEventMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Service;
