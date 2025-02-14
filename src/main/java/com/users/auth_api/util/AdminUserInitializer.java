@@ -26,7 +26,7 @@ public class AdminUserInitializer {
 
         if (!adminExists) {
             Usuario admin = Usuario.builder()
-                .numeroIdetificacion("123456789")
+                .numeroIdentificacion("123456789")
                 .nombre("Admin")
                 .correo(adminEmail)
                 .contrasena(passwordEncoder.encode("Admin123!"))

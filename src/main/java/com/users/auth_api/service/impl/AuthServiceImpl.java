@@ -4,13 +4,16 @@ import com.users.auth_api.dto.request.LoginRequestDTO;
 import com.users.auth_api.dto.request.RegistrarUsuarioRequestDTO;
 import com.users.auth_api.dto.response.TokenResponse;
 import com.users.auth_api.dto.response.UserResponse;
+import com.users.auth_api.entity.LogoutUserEventMessage;
 import com.users.auth_api.entity.Token;
+import com.users.auth_api.entity.UserEventMessage;
 import com.users.auth_api.entity.Usuario;
 import com.users.auth_api.mapper.IUsuarioMapper;
 import com.users.auth_api.repository.ITokenRepository;
 import com.users.auth_api.repository.IUsuarioRepository;
 import com.users.auth_api.service.IAuthService;
 import com.users.auth_api.service.IJwtService;
+import com.users.auth_api.service.JmsMessageService;
 import com.users.auth_api.util.Result;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -38,6 +41,8 @@ public class AuthServiceImpl implements IAuthService {
     private final IJwtService jwtService;
     private final AuthenticationManager authenticationManager;
     private final IUsuarioMapper usuarioMapper;
+    private final JmsMessageService jmsMessageService;
+
 
     @Override
     public Result<UserResponse, String> register(RegistrarUsuarioRequestDTO registrarUsuarioRequestDTO) {
@@ -46,11 +51,18 @@ public class AuthServiceImpl implements IAuthService {
             return Result.failure(List.of("El usuario con el correo " + registrarUsuarioRequestDTO.getCorreo()+ " , ya se encuentra registrado."), HttpStatus.BAD_REQUEST);
         }
         var user = buildCliente(registrarUsuarioRequestDTO);
-        if(Stream.of(user.getCorreo(), user.getNumeroIdetificacion()).anyMatch(Objects::isNull) ){
+        if(Stream.of(user.getCorreo(), user.getNumeroIdentificacion()).anyMatch(Objects::isNull) ){
             return Result.failure(List.of("El usuario con el correo " + registrarUsuarioRequestDTO.getCorreo()+ " , No se pudo registrar, revisar correo o # identificacion."), HttpStatus.BAD_REQUEST);
         }
 
         Usuario userSaved = userRepository.save(user);
+
+        // ActiveMQ
+        UserEventMessage eventMessage = new UserEventMessage("REGISTER", //Creamos mensaje
+                userSaved.getId(), userSaved.getNumeroIdentificacion(), userSaved.getCorreo());
+
+        jmsMessageService.sendEvent("auth_api", eventMessage); //Enviamos
+
         return Result.success(new UserResponse(userSaved.getId()));
     }
 
@@ -79,6 +91,12 @@ public class AuthServiceImpl implements IAuthService {
         var refreshToken = jwtService.generateRefreshToken(usuario);
         revokeAllUserTokens(usuario);
         saveUserToken(usuario, jwtToken);
+        // ActiveMQ
+        UserEventMessage eventMessage = new UserEventMessage("LOGIN",
+                usuario.getId(), usuario.getNumeroIdentificacion(), usuario.getCorreo());
+
+        jmsMessageService.sendEvent("auth_api", eventMessage);
+
         return Result.success(new TokenResponse(usuario.getId(),jwtToken, refreshToken));
     }
 
@@ -138,6 +156,13 @@ public class AuthServiceImpl implements IAuthService {
         token.setExpired(true);
         tokenRepository.save(token);
         SecurityContextHolder.clearContext();
+        // ActiveMQ
+        String tokenString = token.getToken().toString();
+        LogoutUserEventMessage eventMessage = new LogoutUserEventMessage("LOGOUT",
+                tokenString);
+
+        jmsMessageService.sendEvent("auth_api", eventMessage);
+
         return Result.success("Logout successful");
     }
 
