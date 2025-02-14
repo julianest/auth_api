@@ -12,7 +12,7 @@ import java.io.Serializable;
 public class UserEventMessage implements Serializable {
     private static final long serialVersionUID = 1l;
 
-    private String eventType; // "REGISTER", "LOGIN"
+    private String eventType; // "REGISTER", "LOGIN", "LOGOUT"
     private Long userId;
     private String numberIdentification;
     private String correo;

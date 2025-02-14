@@ -26,8 +26,9 @@ public class JmsConfig {
     public DefaultJmsListenerContainerFactory jmsListenerContainerFactory(ConnectionFactory connectionFactory, MessageConverter messageConverter) {
         DefaultJmsListenerContainerFactory factory = new DefaultJmsListenerContainerFactory();
         factory.setConnectionFactory(connectionFactory);
-        factory.setConcurrency("5-10");
+        factory.setConcurrency("1");
         factory.setMessageConverter(messageConverter); // Configuramos el conversor aquí
+        factory.setPubSubDomain(true); // HABILITAR PUB/SUB PARA TOPICS
         return factory;
     }
 
@@ -35,6 +36,7 @@ public class JmsConfig {
     public JmsTemplate jmsTemplate(ConnectionFactory connectionFactory, MessageConverter messageConverter) {
         JmsTemplate jmsTemplate = new JmsTemplate(connectionFactory);
         jmsTemplate.setMessageConverter(messageConverter); // Configuramos el conversor aquí
+        jmsTemplate.setPubSubDomain(true); // HABILITAR PUB/SUB PARA TOPICS
         return jmsTemplate;
     }
 

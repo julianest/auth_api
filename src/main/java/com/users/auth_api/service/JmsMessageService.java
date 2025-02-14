@@ -19,9 +19,21 @@ public class JmsMessageService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MessageConsumer.class);
 
-    public void sendEvent(String appMessage, Object message) {
+    public void sendEvent(String appMessage,String eventType, Object message) {
+        String typeActiveMQ;
+        if( eventType == "LOGOUT"){
+            typeActiveMQ = "auth-topic";
+            sendEventClasified(typeActiveMQ,appMessage, message);
+        }else{
+            typeActiveMQ = "auth-queue";
+            sendEventClasified(typeActiveMQ,appMessage, message);
+        }
+    }
+
+    public void sendEventClasified(String typeActiveMQ, String appMessage, Object message){
         try {
-            jmsTemplate.convertAndSend("auth-queue", message, msg -> {
+
+            jmsTemplate.convertAndSend(typeActiveMQ, message, msg -> {
                 msg.setStringProperty("appMessage", appMessage);
                 msg.setStringProperty("_type", message.getClass().getName()); // Tipo dinámico del mensaje
                 return msg;

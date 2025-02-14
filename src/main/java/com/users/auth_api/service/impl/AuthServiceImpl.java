@@ -58,10 +58,11 @@ public class AuthServiceImpl implements IAuthService {
         Usuario userSaved = userRepository.save(user);
 
         // ActiveMQ
-        UserEventMessage eventMessage = new UserEventMessage("REGISTER", //Creamos mensaje
+        String eventType = "REGISTER";
+        UserEventMessage eventMessage = new UserEventMessage(eventType, //Creamos mensaje
                 userSaved.getId(), userSaved.getNumeroIdentificacion(), userSaved.getCorreo());
 
-        jmsMessageService.sendEvent("auth_api", eventMessage); //Enviamos
+        jmsMessageService.sendEvent("auth_api",eventType, eventMessage); //Enviamos
 
         return Result.success(new UserResponse(userSaved.getId()));
     }
@@ -92,10 +93,11 @@ public class AuthServiceImpl implements IAuthService {
         revokeAllUserTokens(usuario);
         saveUserToken(usuario, jwtToken);
         // ActiveMQ
-        UserEventMessage eventMessage = new UserEventMessage("LOGIN",
+        String eventType = "LOGIN";
+        UserEventMessage eventMessage = new UserEventMessage(eventType,
                 usuario.getId(), usuario.getNumeroIdentificacion(), usuario.getCorreo());
 
-        jmsMessageService.sendEvent("auth_api", eventMessage);
+        jmsMessageService.sendEvent("auth_api",eventType, eventMessage);
 
         return Result.success(new TokenResponse(usuario.getId(),jwtToken, refreshToken));
     }
@@ -157,11 +159,12 @@ public class AuthServiceImpl implements IAuthService {
         tokenRepository.save(token);
         SecurityContextHolder.clearContext();
         // ActiveMQ
+        String eventType = "LOGOUT";
         String tokenString = token.getToken().toString();
-        LogoutUserEventMessage eventMessage = new LogoutUserEventMessage("LOGOUT",
+        LogoutUserEventMessage eventMessage = new LogoutUserEventMessage(eventType,
                 tokenString);
 
-        jmsMessageService.sendEvent("auth_api", eventMessage);
+        jmsMessageService.sendEvent("auth_api",eventType,eventMessage);
 
         return Result.success("Logout successful");
     }
