@@ -1,4 +1,4 @@
-package com.users.auth_api.component;
+/*package com.users.auth_api.component;
 
 import jakarta.jms.TextMessage;
 import org.apache.activemq.command.ActiveMQTextMessage;
@@ -33,4 +33,7 @@ public class MessageConsumer {
             LOGGER.error("Error processing message: {}", e.getMessage(), e);
         }
     }
-}
+}*/
+
+// Se deja comentada esta clase, ya que necesitamos es que se consuma desde el microservicio de auditoria es decir el de Operaciones_bancarias(Reactivo)= https://github.com/CharlSK8/CuentaBancariaReactiva.
+// Pero no se elimina ya que si queremos podemos consumirlo aqui mismo y esta clase sirve para transportar a otros.
