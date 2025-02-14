@@ -2,7 +2,7 @@ name: Auth_Api_Sofbank
 
 on:
   push:
-    branches: [ "feat/jhuerfano/#0001_SonarQube" ]
+    branches: [ "develop" ]
   workflow_dispatch:
 
 permissions:
