@@ -15,6 +15,6 @@ WORKDIR /app
 
 COPY --from=build /app/build/libs/auth_api-1.0.0.jar /app/auth_api.jar
 
-EXPOSE 8080
+EXPOSE 8082
 
 ENTRYPOINT ["java", "-jar", "auth_api.jar"]
