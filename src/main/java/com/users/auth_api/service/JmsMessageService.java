@@ -1,27 +1,20 @@
 package com.users.auth_api.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.jms.MessageConsumer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Service;
 
+@Log4j2
 @Service
+@AllArgsConstructor
 public class JmsMessageService {
 
-    @Autowired
     private JmsTemplate jmsTemplate;
-
-    @Autowired
-    private ObjectMapper objectMapper;
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(MessageConsumer.class);
 
     public void sendEvent(String appMessage,String eventType, Object message) {
         String typeActiveMQ;
-        if( eventType == "LOGOUT"){
+        if( "LOGOUT".equals(eventType)){
             typeActiveMQ = "auth-topic";
             sendEventClasified(typeActiveMQ,appMessage, message);
         }else{
@@ -35,13 +28,13 @@ public class JmsMessageService {
 
             jmsTemplate.convertAndSend(typeActiveMQ, message, msg -> {
                 msg.setStringProperty("appMessage", appMessage);
-                msg.setStringProperty("_type", message.getClass().getName()); // Tipo dinámico del mensaje
+                msg.setStringProperty("_type", message.getClass().getName());
                 return msg;
             });
-            LOGGER.info("Message sent from {}: {}", "APP = auth_api", message);
+            log.info("Message sent from {}: {}", "APP = auth_api", message);
 
         } catch (Exception e) {
-            System.err.println("⚠️ Error enviando mensaje: " + e.getMessage());
+            log.error("Error enviando mensaje: " + e.getMessage());
         }
     }
 }
